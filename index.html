@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Files On Web</title>
+</head>
+<style>
+    header.topbar {
+        box-shadow: 3px;
+        z-index: 900;
+        right: 20px;
+        left: 20px;
+        top: 0;
+        position: fixed;
+        display: block;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+        height: 50px;
+        transition-duration: .5s;
+        background: #ffffff;
+        transition-property: transform, background-color, box-shadow, -webkit-transform, -webkit-box-shadow;
+        transition-timing-function: cubic-bezier(.09, .47, .18, .99);
+    }
+
+    .header-spacer {
+        height: 50px;
+    }
+
+    body {
+        -webkit-font-smoothing: antialiased;
+        color: #1a1a1a;
+        font-family: Merriweather, Georgia, serif;
+        font-size: 100%;
+        font-weight: 400;
+        line-height: 1.7;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .logo {
+        width: 260px;
+        overflow: hidden;
+        transition-duration: .2s;
+        transition-property: color, fill;
+        transition-timing-function: ease-in-out;
+        font-size: 16px;
+        font-weight: 900;
+        font-family: monospace;
+        margin-top: 11px;
+        margin-left: 20px;
+    }
+    h1,h2,h3,h4,h5,h6 {
+        text-align: center;
+        font-weight: bold;
+    }
+</style>
+
+<body>
+    <header class="topbar">
+        <div class="logo">FileOnWeb</div>
+    </header>
+    <section>
+        <div class="header-spacer"></div>
+        <h1>This is the Page!!!!!</h1>
+        <div>
+            {{range .Files}}
+            <p><a href="{{$.BasePath}}/{{.}}">{{.}}</a></p>
+            {{end}}
+        </div>
+    </section>
+</body>
+
+</html>
