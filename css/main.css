@@ -1,0 +1,135 @@
+header.topbar {
+    box-shadow: 3px;
+    z-index: 900;
+    right: 0px;
+    left: 0px;
+    top: 0;
+    position: fixed;
+    display: flex;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+    height: 50px;
+    transition-duration: .5s;
+    background: #ffffff;
+    transition-property: transform, background-color, box-shadow, -webkit-transform, -webkit-box-shadow;
+    transition-timing-function: cubic-bezier(.09, .47, .18, .99);
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    color: #1a1a1a;
+    font-family: Merriweather, Georgia, serif;
+    font-size: 100%;
+    line-height: 1.7;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 90%;
+    height: fit-content;
+    width: fit-content;
+}
+
+.logo {
+    width: 260px;
+    overflow: hidden;
+    transition-duration: .2s;
+    transition-property: color, fill;
+    transition-timing-function: ease-in-out;
+    font-size: 16px;
+    font-weight: 900;
+    font-family: monospace;
+    margin-top: 11px;
+    margin-left: 20px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-align: center;
+    font-weight: bold;
+}
+
+.item_cell {
+    flex-basis: auto;
+    margin-left: 5px;
+    margin-right: 5px;
+    overflow: hidden;
+    max-width: 320px;
+    max-height: 320px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+a {
+    color: #ff8600;
+    text-decoration: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+a:hover {
+    transition: color .2s ease-in-out;
+    color: #1a1a1a;
+}
+
+.item_row {
+    overflow: hidden;
+    display: -webkit-flex;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: baseline;
+    align-content: stretch;
+    width: fit-content;
+}
+
+.main-section {
+    width: fit-content;
+    height: fit-content;
+    margin: 55px 5px 5px 0;
+}
+
+.item_cell>img {
+    margin: 0;
+    text-align: center;
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.item_name>p {
+    margin: 0;
+}
+
+.item_name {
+    text-align: center;
+    font-size: 12px;
+    margin: 0;
+    max-height: 2em;
+    position: absolute;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: keep-all;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.item_name:hover {
+    transition: height .2s ease-in-out;
+    -moz-transition: height .2s ease-in-out;
+    /* Firefox 4 */
+    -webkit-transition: height .2s ease-in-out;
+    /* Safari and Chrome */
+    -o-transition: height .2s ease-in-out;
+    /* Opera */
+    max-height: fit-content;
+    background-color: #f7a951;
+    border-radius: 5px;
+}
+
+.end-of-board {
+    text-align: center;
+    position: absolute;
+    bottom: 0px;
+}
