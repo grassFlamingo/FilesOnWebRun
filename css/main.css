@@ -1,3 +1,20 @@
+::-webkit-scrollbar {
+    width: 6px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #ff8600;
+}
+
+
+
 header.topbar {
     box-shadow: 3px;
     z-index: 900;
@@ -157,8 +174,9 @@ ul.dir-tips {
     margin: 0;
     padding: 0;
     width: 200px;
-    height: 500px;
-    overflow: hidden scroll;
+    height: fit-content;
+    max-height: 500px;
+    overflow: hidden auto;
     box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
     transition-duration: .5s;
     background: #ffffff;
@@ -168,7 +186,8 @@ ul.dir-tips {
 
 ul.dir-tips>li {
     max-width: 200px;
-    color: #ff8600;;
+    color: #ff8600;
+    ;
     font: 14px arial;
     line-height: 22px;
     padding: 1px 8px;

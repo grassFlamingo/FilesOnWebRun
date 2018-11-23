@@ -13,6 +13,7 @@
 <!-- {{/*https://www.runoob.com/w3cnote/flex-grammar.html*/}} -->
 <style>
 
+
 </style>
 
 <body onscroll="boardScroll(this);">
@@ -94,9 +95,10 @@
             }
         </script>
         <script>
-            function jumpToDir(pwd){
+            function jumpToDir(pwd) {
                 window.location.href = pwd;
             }
+
             function loadDirInfo(self, pwd) {
                 var me = $(self);
                 $.getJSON(pwd, {
@@ -115,7 +117,7 @@
                     }
                     var block = $('#dir-tips-block');
 
-                    block.css("top", me.offset().top + me.height() + 3);
+                    block.css("top", me.height() + 20);
                     block.css("left", me.offset().left - (block.width() - me.width()) / 2);
                     block.css("display", "block");
                 });
