@@ -157,6 +157,8 @@ ul.dir-tips {
     margin: 0;
     padding: 0;
     width: 200px;
+    height: 500px;
+    overflow: hidden scroll;
     box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
     transition-duration: .5s;
     background: #ffffff;
