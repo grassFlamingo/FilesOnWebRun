@@ -12,51 +12,7 @@
 </head>
 <!-- {{/*https://www.runoob.com/w3cnote/flex-grammar.html*/}} -->
 <style>
-    .header-path {
-        text-align: left;
-        overflow: hidden;
-        left: 150px;
-        position: fixed;
-        margin-top: 11px;
-        font-size: 15px;
-        display: flex;
-    }
 
-    .pwd_cell {
-        margin-left: 5px;
-        margin-right: 5px;
-        font-weight: bold;
-        font-size: 15px;
-    }
-
-    ul.dir-tips {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        width: 200px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
-        transition-duration: .5s;
-        background: #ffffff;
-        transition-property: transform, background-color, box-shadow, -webkit-transform, -webkit-box-shadow;
-        transition-timing-function: cubic-bezier(.09, .47, .18, .99);
-    }
-
-    ul.dir-tips>li {
-        max-width: 200px;
-        color: #ff8600;;
-        font: 14px arial;
-        line-height: 22px;
-        padding: 1px 8px;
-        position: relative;
-        cursor: default;
-    }
-
-    ul.dir-tips>li:hover {
-        transition: color .2s ease-in-out;
-        color: #1a1a1a;
-        transition: background-color .2s ease-in-out;
-        background-color: #fdffa3;
-    }
 </style>
 
 <body onscroll="boardScroll(this);">

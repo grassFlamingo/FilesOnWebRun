@@ -35,14 +35,14 @@ func GetImageSize(r io.Reader) (int, int) {
 	if f < 1 {
 		// tall picture
 		// if the image too high (h > 300) or not tall enough (h < 120)
-		if h > 300 || h < 120 {
-			w, h = int(300.0*f), 300
+		if h > 180 || h < 100 {
+			w, h = int(180.0*f), 180
 		}
 	} else {
 		// fat picture
 		// if the image too fat (w > 300) or not fat enough (w < 120)
-		if w > 300 || w < 160 {
-			w, h = 300, int(300.0/f)
+		if w > 180 || w < 120 {
+			w, h = 180, int(180.0/f)
 		}
 	}
 	return w, h

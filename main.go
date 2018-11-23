@@ -5,9 +5,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 var (
@@ -19,11 +22,33 @@ const (
 	PATH_INDEX   = "index.html"
 )
 
+type MainConfig struct {
+	WorkingDir string
+}
+
+func unPackConfigFile(dir string) *MainConfig {
+	file, err := os.OpenFile(dir, os.O_RDONLY, os.ModePerm)
+	if err != nil {
+		log.Panicln("Error", err)
+	}
+	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Panicln("Error", err)
+	}
+	conf := &MainConfig{}
+	err = json.Unmarshal(data, conf)
+	if err != nil {
+		log.Panicln("Error", err)
+	}
+	return conf
+}
+
 func main() {
 	log.Println("Starting App")
+	conf := unPackConfigFile("filesonweb.json")
 	mux := http.NewServeMux()
 	mux.Handle("/", http.RedirectHandler(WORKING_PATH, http.StatusFound))
-	mux.Handle(WORKING_PATH+"/", newFileServer(http.Dir("/media/aliy/DATA/PHOTO/")))
+	mux.Handle(WORKING_PATH+"/", newFileServer(http.Dir(conf.WorkingDir)))
 	mux.Handle("/img/", fileOnlyServer)
 	mux.Handle("/js/", fileOnlyServer)
 	mux.Handle("/css/", fileOnlyServer)
