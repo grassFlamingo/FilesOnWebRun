@@ -52,3 +52,18 @@ func TestPWDCreaterBad(t *testing.T) {
 	basetools.AssertEqual(t, P[1].Name, "home")
 
 }
+
+func TestSomeBasic(t *testing.T) {
+	var w, h, wh = 0, 0, 0
+
+	w = 0x33
+	h = 0x44
+	wh = ((w & 0xffff) << 16) | (h & 0xffff)
+	basetools.AssertEqual(t, wh, 0x00330044)
+
+	tw := (wh & 0xffff0000) >> 16
+	th := wh & 0x0000ffff
+	basetools.AssertEqual(t, tw, w)
+	basetools.AssertEqual(t, th, h)
+
+}

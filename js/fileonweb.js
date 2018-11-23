@@ -17,7 +17,14 @@ var WORK_DATA_ITERATOR = {
         if (this.length < 1) {
             return;
         }
-        for (var head = 0, tail = 1; tail < workdir.length; tail++) {
+        var head = 0;
+        for(; head < workdir.length; head++){
+            if(workdir[head].IsImg){
+               break;
+            }
+        }
+        var tail = head+1;
+        for (; tail < workdir.length; tail++) {
             if (!workdir[tail].IsImg) {
                 var t = workdir[head];
                 workdir[head] = workdir[tail];

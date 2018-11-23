@@ -104,7 +104,7 @@ func (self *fileServer) echoDirAndFile(upath string, file http.File) []*fileEcho
 			if err != nil {
 				log.Println("Get Image size in servehttp", err)
 			} else {
-				fei.Width, fei.Height = GetImageSize(bufio.NewReader(imginfo))
+				fei.Width, fei.Height = GetBufImageSize(fei.Path, bufio.NewReader(imginfo))
 				imginfo.Close()
 			}
 		}

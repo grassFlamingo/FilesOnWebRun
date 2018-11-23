@@ -19,6 +19,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 // this result was scaled limit (300,300)
@@ -44,6 +45,33 @@ func GetImageSize(r io.Reader) (int, int) {
 		if w > 180 || w < 120 {
 			w, h = 180, int(180.0/f)
 		}
+	}
+	return w, h
+}
+
+var (
+	BUF_IMG_SIZE_MAP = make(map[string]int)
+)
+
+func init() {
+	go func() {
+		for {
+			time.Sleep(80 * time.Hour)
+			BUF_IMG_SIZE_MAP = nil
+			BUF_IMG_SIZE_MAP = make(map[string]int)
+		}
+	}()
+}
+
+func GetBufImageSize(key string, r io.Reader) (int, int) {
+	var w, h int
+	if v, ok := BUF_IMG_SIZE_MAP[key]; ok {
+		w = (v & 0xffff0000) >> 16
+		h = v & 0x0000ffff
+	} else {
+		w, h = GetImageSize(r)
+		wh := ((w & 0xffff) << 16) | (h & 0xffff)
+		BUF_IMG_SIZE_MAP[key] = wh
 	}
 	return w, h
 }
