@@ -56,10 +56,42 @@ func (self *fileServer) ServeJson(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// json response
+	if r.FormValue("dironly") == "yes" {
+		JsonResponse(w, self.echoDirOnly(upath, file))
+	} else {
+		JsonResponse(w, self.echoDirAndFile(upath, file))
+	}
+
+}
+
+func (self *fileServer) echoDirOnly(upath string, file http.File) []*dirEchoItem {
 	files, err := file.Readdir(-1)
 	if err != nil {
 		log.Println("Show Dir", err)
-		return
+		return nil
+	}
+	echo := make([]*dirEchoItem, 0, len(files))
+	for _, f := range files {
+		if f.Name()[0] == '.' {
+			continue
+		}
+		if f.IsDir() {
+			fei := &dirEchoItem{
+				Name: f.Name(),
+				Path: path.Join(WORKING_PATH, upath, f.Name()),
+				Icon: "/img/folder.svg",
+			}
+			echo = append(echo, fei)
+		}
+	}
+	return echo
+}
+
+func (self *fileServer) echoDirAndFile(upath string, file http.File) []*fileEchoItem {
+	files, err := file.Readdir(-1)
+	if err != nil {
+		log.Println("Show Dir", err)
+		return nil
 	}
 	echo := make([]*fileEchoItem, 0, len(files))
 	for _, f := range files {
@@ -78,7 +110,7 @@ func (self *fileServer) ServeJson(w http.ResponseWriter, r *http.Request) {
 		}
 		echo = append(echo, fei)
 	}
-	JsonResponse(w, echo)
+	return echo
 }
 
 func (self *fileServer) ServeView(w http.ResponseWriter, r *http.Request) {
@@ -99,34 +131,56 @@ func (self *fileServer) ServeView(w http.ResponseWriter, r *http.Request) {
 	}
 	if info.IsDir() {
 		doc := template.Must(template.ParseFiles(PATH_INDEX))
-		doc.Execute(w, upath)
+		doc.Execute(w, newDirPwd(upath))
 	} else {
 		http.ServeContent(w, r, info.Name(), info.ModTime(), file)
 	}
 }
 
-type dirpwd struct {
-	PWD    string
-	cindex int
-}
+type dirpwd string
 
-func (self dirpwd) HasNext() bool {
-	return self.cindex < len(self.PWD)
-}
-func (self dirpwd) SplidPWD() (string, string) {
-	upath := self.PWD
-	oind := self.cindex
-	lenght := len(upath)
-	if oind >= lenght {
-		return "", ""
-	}
-	for i := oind; i < len(upath); i++ {
-		if upath[i] == '/' {
-			self.cindex = i
-			break
+func newDirPwd(pwd string) dirpwd {
+	lpwd := len(pwd)
+	if lpwd <= 1 {
+		pwd = "/"
+	} else {
+		if pwd[lpwd-1] == '/' {
+			pwd = pwd[0 : lpwd-1]
 		}
 	}
-	return upath[0:self.cindex], upath[oind:self.cindex]
+	return dirpwd(pwd)
+}
+
+type dirpwditem struct {
+	PWD  string
+	Name string
+}
+
+func (self dirpwd) GetPackedPWD() []dirpwditem {
+	upath := string(self)
+	lenght := len(upath)
+	out := make([]dirpwditem, 0, 20)
+
+	if lenght <= 0 {
+		return out
+	}
+
+	out = append(out, dirpwditem{PWD: "/", Name: "ROOT"})
+
+	cend := 1
+	cbeg := 1
+	for i, c := range upath[1:] {
+		if c == '/' {
+			cend = i + 1
+			out = append(out, dirpwditem{PWD: upath[0:cend], Name: upath[cbeg:cend]})
+			cbeg = cend + 1
+		}
+	}
+	if cend < lenght {
+		out = append(out, dirpwditem{PWD: upath, Name: upath[cbeg:]})
+	}
+
+	return out
 }
 
 // localRedirect gives a Moved Permanently response.

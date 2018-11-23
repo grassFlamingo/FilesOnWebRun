@@ -21,6 +21,42 @@
         font-size: 15px;
         display: flex;
     }
+
+    .pwd_cell {
+        margin-left: 5px;
+        margin-right: 5px;
+        font-weight: bold;
+        font-size: 15px;
+    }
+
+    ul.dir-tips {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        width: 200px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+        transition-duration: .5s;
+        background: #ffffff;
+        transition-property: transform, background-color, box-shadow, -webkit-transform, -webkit-box-shadow;
+        transition-timing-function: cubic-bezier(.09, .47, .18, .99);
+    }
+
+    ul.dir-tips>li {
+        max-width: 200px;
+        color: #ff8600;;
+        font: 14px arial;
+        line-height: 22px;
+        padding: 1px 8px;
+        position: relative;
+        cursor: default;
+    }
+
+    ul.dir-tips>li:hover {
+        transition: color .2s ease-in-out;
+        color: #1a1a1a;
+        transition: background-color .2s ease-in-out;
+        background-color: #fdffa3;
+    }
 </style>
 
 <body onscroll="boardScroll(this);">
@@ -28,14 +64,20 @@
         <div class="logo">FileOnWeb</div>
         <div class="header-path">
             <div id="global-working-path" style="display:none;">{{ . }}</div>
-            <div class="pwd_cell"><a href="/files/">HOME</a></div>
-            <div class="pwd_cell"><a href="/files/">HOME</a></div>
+            {{range .GetPackedPWD}}
+            <div class="pwd_cell"><a href="/files{{.PWD}}" onmouseover="loadDirInfo(this, '/files{{.PWD}}');">{{.Name}}</a></div>
+            {{end}}
         </div>
-        <div id="debug-output-table"></div>
+        <div id="debug-output-table">
+            <div id="dir-tips-block" style="position:absolute;left: 0; top: 0;display: none;" onmouseleave="$(this).css('display', 'none');">
+                <ul class="dir-tips" id="dir-tips">
+                </ul>
+            </div>
+
+        </div>
     </header>
     <section class="main-section">
-        <div id="display-board" class="item_row">
-        </div>
+        <div id="display-board" class="item_row"></div>
         <script>
             var WORKING_PATH = "/files" + $("#global-working-path").text();
             $(document).ready(function () {
@@ -96,6 +138,32 @@
             }
         </script>
         <script>
+            function jumpToDir(pwd){
+                window.location.href = pwd;
+            }
+            function loadDirInfo(self, pwd) {
+                var me = $(self);
+                $.getJSON(pwd, {
+                    "requestfor": "data",
+                    "dironly": "yes",
+                }, function (data, textStatus, jqXHR) {
+
+                    var tips = $("#dir-tips");
+                    tips.empty();
+                    if (data.length <= 0) {
+                        tips.append(`<li><a href="#">ヽ(*。>Д<)o゜</a></li>`)
+                    } else {
+                        for (var i in data) {
+                            tips.append(`<li onclick="jumpToDir('${data[i].Path}');">${data[i].Name}</li>`)
+                        }
+                    }
+                    var block = $('#dir-tips-block');
+
+                    block.css("top", me.offset().top + me.height() + 3);
+                    block.css("left", me.offset().left - (block.width() - me.width()) / 2);
+                    block.css("display", "block");
+                });
+            }
             // function optimizePWD() {
             //     var pwd = $('#global-working-path').text().split('/');
             //     $('#global-working-path').css('display', 'none');

@@ -16,6 +16,12 @@ type fileEchoItem struct {
 	Height int
 }
 
+type dirEchoItem struct {
+	Name string
+	Path string
+	Icon string
+}
+
 func newfileEchoItem(basepath string, info os.FileInfo) *fileEchoItem {
 	vf := &fileEchoItem{
 		Name:   info.Name(),

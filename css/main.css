@@ -66,6 +66,7 @@ a {
     text-decoration: none;
     background-color: transparent;
     cursor: pointer;
+    font-family: sans-serif;
 }
 
 a:hover {
@@ -124,7 +125,7 @@ a:hover {
     -o-transition: height .2s ease-in-out;
     /* Opera */
     max-height: fit-content;
-    background-color: #f7a951;
+    background-color: #fdffa3;
     border-radius: 5px;
 }
 
