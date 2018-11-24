@@ -19,11 +19,25 @@ var WORK_DATA_ITERATOR = {
         }
         var head = 0;
         for(; head < workdir.length; head++){
-            if(workdir[head].IsImg){
-               break;
+            if(!workdir[head].IsDir){
+                break;
             }
         }
         var tail = head+1;
+        for (; tail < workdir.length; tail++) {
+            if (workdir[tail].IsDir) {
+                var t = workdir[head];
+                workdir[head] = workdir[tail];
+                workdir[tail] = t;
+                head += 1;
+            }
+        }
+        for(; head < workdir.length; head++){
+            if(workdir[head].IsImg){
+                break;
+            }
+        }
+        tail = head+1;
         for (; tail < workdir.length; tail++) {
             if (!workdir[tail].IsImg) {
                 var t = workdir[head];

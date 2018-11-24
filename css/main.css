@@ -39,7 +39,6 @@ body {
     line-height: 1.7;
     margin-left: 20px;
     margin-right: 20px;
-    width: 90%;
     height: fit-content;
     width: fit-content;
 }
@@ -92,7 +91,7 @@ a:hover {
 }
 
 .item_row {
-    overflow: hidden;
+    overflow: hidden auto;
     display: -webkit-flex;
     display: flex;
     flex-wrap: wrap;
@@ -148,18 +147,22 @@ a:hover {
 
 .end-of-board {
     text-align: center;
-    position: absolute;
+    position: fixed;
     bottom: 0px;
+    right: 5px;
 }
 
 .header-path {
     text-align: left;
-    overflow: hidden;
+    /* overflow: auto hidden; */
     left: 150px;
     position: fixed;
-    margin-top: 11px;
+    margin-top: 12px;
     font-size: 15px;
     display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    height: 3ex;
 }
 
 .pwd_cell {
@@ -173,7 +176,8 @@ ul.dir-tips {
     list-style: none;
     margin: 0;
     padding: 0;
-    width: 200px;
+    max-width: 600px;
+    width: fit-content;
     height: fit-content;
     max-height: 500px;
     overflow: hidden auto;

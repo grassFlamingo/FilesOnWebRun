@@ -99,16 +99,21 @@ func (self *fileServer) echoDirAndFile(upath string, file http.File) []*fileEcho
 			continue
 		}
 		fei := newfileEchoItem(upath, f)
-		if fei.IsImg {
-			imginfo, err := self.root.Open(path.Join(upath, f.Name()))
-			if err != nil {
-				log.Println("Get Image size in servehttp", err)
-			} else {
-				fei.Width, fei.Height = GetBufImageSize(fei.Path, bufio.NewReader(imginfo))
-				imginfo.Close()
-			}
-		}
 		echo = append(echo, fei)
+		if !fei.IsImg {
+			continue
+		}
+		if ok, w, h := IsBuffedImageSize(fei.Path); ok {
+			fei.Width, fei.Height = w, h
+			continue
+		}
+		imginfo, err := self.root.Open(path.Join(upath, f.Name()))
+		if err != nil {
+			log.Println("Get Image size in servehttp", err)
+		} else {
+			fei.Width, fei.Height = BufImageSize(fei.Path, bufio.NewReader(imginfo))
+			imginfo.Close()
+		}
 	}
 	return echo
 }

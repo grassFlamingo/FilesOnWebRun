@@ -22,7 +22,7 @@
         <div class="header-path">
             <div id="global-working-path" style="display:none;">{{ . }}</div>
             {{range .GetPackedPWD}}
-            <div class="pwd_cell"><a href="/files{{.PWD}}" onmouseover="loadDirInfo(this, '/files{{.PWD}}');">{{.Name}}</a></div>
+            <a class="pwd_cell" href="/files{{.PWD}}" onmouseover="loadDirInfo(this, '/files{{.PWD}}');">{{.Name}}</a>
             {{end}}
         </div>
         <div id="debug-output-table">
@@ -42,17 +42,27 @@
                     "requestfor": "data"
                 }, function (data, textStatus, jqXHR) {
                     WORK_DATA_ITERATOR.setList(data);
-                    while ($(document).height() < window.innerHeight + 200) {
-                        if (!displayItems(10)) {
-                            break;
+                    initialDisplayItem(5);
+                    setTimeout(function () {
+                        if(initialDisplayItem(5)){
+                            // console.log(arguments.callee)
+                            // alert(arguments.callee)
+                            setTimeout(arguments.callee, 3);
                         }
-                    }
+                    }, 2);
                 });
             });
 
+            function initialDisplayItem(count) {
+                if ($(document).height() < window.innerHeight + 50) {
+                    return displayItems(count);
+                }
+                return false
+            }
+
             function boardScroll(self) {
-                if ($(document).height() - $(document).scrollTop() - window.innerHeight < 200) {
-                    displayItems(20);
+                if ($(document).height() - $(document).scrollTop() - window.innerHeight < 50) {
+                    displayItems(5);
                 }
             }
 
@@ -112,21 +122,16 @@
                         tips.append(`<li><a href="#">ヽ(*。>Д<)o゜</a></li>`)
                     } else {
                         for (var i in data) {
-                            tips.append(`<li onclick="jumpToDir('${data[i].Path}');">${data[i].Name}</li>`)
+                            tips.append(`<li onclick="jumpToDir(\`${data[i].Path}\`);">${data[i].Name}</li>`)
                         }
                     }
                     var block = $('#dir-tips-block');
 
-                    block.css("top", me.height() + 20);
+                    block.css("top", me.position().top + me.height() + 14);
                     block.css("left", me.offset().left - (block.width() - me.width()) / 2);
                     block.css("display", "block");
                 });
             }
-            // function optimizePWD() {
-            //     var pwd = $('#global-working-path').text().split('/');
-            //     $('#global-working-path').css('display', 'none');
-            //     alert(pwd);
-            // }
         </script>
     </section>
     <div id="end-of-board" class="end-of-board"></div>

@@ -63,7 +63,16 @@ func init() {
 	}()
 }
 
-func GetBufImageSize(key string, r io.Reader) (int, int) {
+func IsBuffedImageSize(key string) (bool, int, int) {
+	if v, ok := BUF_IMG_SIZE_MAP[key]; ok {
+		w := (v & 0xffff0000) >> 16
+		h := v & 0x0000ffff
+		return true, w, h
+	}
+	return false, 0, 0
+}
+
+func BufImageSize(key string, r io.Reader) (int, int) {
 	var w, h int
 	if v, ok := BUF_IMG_SIZE_MAP[key]; ok {
 		w = (v & 0xffff0000) >> 16
