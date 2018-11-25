@@ -45,11 +45,9 @@
                     initialDisplayItem(5);
                     setTimeout(function () {
                         if(initialDisplayItem(5)){
-                            // console.log(arguments.callee)
-                            // alert(arguments.callee)
-                            setTimeout(arguments.callee, 3);
+                            setTimeout(arguments.callee, 300);
                         }
-                    }, 2);
+                    }, 300);
                 });
             });
 
@@ -72,6 +70,8 @@
                     if (itemPack.index < 0) {
                         $('#end-of-board').text("ｍ(o・ω・o)ｍ");
                         return false;
+                    }else{
+                        $('#end-of-board').text(`${WORK_DATA_ITERATOR.current}/${WORK_DATA_ITERATOR.length}`);
                     }
                     addItem(itemPack.index, itemPack.data);
                 }
@@ -96,15 +96,13 @@
 
                 $('#display-board').append(
                     `<div class="item_cell" id="item_index_${index}">
-                        <a href="${item.Path}">
-                        ${imgp}
+                        <a href="${item.Path}">${imgp}
                         <div class="item_name" style="width:${width}px;"><p>${item.Name}</p></div>
                         </a>
                     </div>`
                 );
             }
-        </script>
-        <script>
+
             function jumpToDir(pwd) {
                 window.location.href = pwd;
             }
@@ -115,7 +113,6 @@
                     "requestfor": "data",
                     "dironly": "yes",
                 }, function (data, textStatus, jqXHR) {
-
                     var tips = $("#dir-tips");
                     tips.empty();
                     if (data.length <= 0) {
@@ -125,8 +122,8 @@
                             tips.append(`<li onclick="jumpToDir(\`${data[i].Path}\`);">${data[i].Name}</li>`)
                         }
                     }
-                    var block = $('#dir-tips-block');
 
+                    var block = $('#dir-tips-block');
                     block.css("top", me.position().top + me.height() + 14);
                     block.css("left", me.offset().left - (block.width() - me.width()) / 2);
                     block.css("display", "block");

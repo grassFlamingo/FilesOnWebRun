@@ -8,6 +8,7 @@ A simple tool to see your files on a broswer.
 
 ```json
 {
-    "WorkingDir": "/path/to/view"
+    "WorkingDir": "/path/to/view",
+    "Port": ":9898"
 }
 ```

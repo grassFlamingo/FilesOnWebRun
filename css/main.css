@@ -74,7 +74,7 @@ h6 {
     max-width: 320px;
     max-height: 320px;
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 35px;
 }
 
 a {
@@ -97,7 +97,7 @@ a:hover {
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: stretch;
-    align-items: baseline;
+    align-items: stretch;
     align-content: stretch;
     width: fit-content;
 }
@@ -105,7 +105,7 @@ a:hover {
 .main-section {
     width: fit-content;
     height: fit-content;
-    margin: 55px 5px 5px 0;
+    margin: 55px 5px 5px 20px;
 }
 
 .item_cell>img {
@@ -121,7 +121,7 @@ a:hover {
 
 .item_name {
     text-align: center;
-    font-size: 12px;
+    font-size: 14px;
     margin: 0;
     max-height: 2em;
     position: absolute;
@@ -146,10 +146,11 @@ a:hover {
 }
 
 .end-of-board {
+    font-family: sans-serif;
     text-align: center;
     position: fixed;
     bottom: 0px;
-    right: 5px;
+    right: 10px;
 }
 
 .header-path {
@@ -191,7 +192,6 @@ ul.dir-tips {
 ul.dir-tips>li {
     max-width: 200px;
     color: #ff8600;
-    ;
     font: 14px arial;
     line-height: 22px;
     padding: 1px 8px;

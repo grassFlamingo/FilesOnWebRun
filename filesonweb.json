@@ -1,3 +1,4 @@
 {
-    "WorkingDir": "/media/aliy"
+    "WorkingDir": "",
+    "Port": ":9898"
 }

@@ -24,6 +24,7 @@ const (
 
 type MainConfig struct {
 	WorkingDir string
+	Port       string
 }
 
 func unPackConfigFile(dir string) *MainConfig {
@@ -31,6 +32,7 @@ func unPackConfigFile(dir string) *MainConfig {
 	if err != nil {
 		log.Panicln("Error", err)
 	}
+	defer file.Close()
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
 		log.Panicln("Error", err)
@@ -40,6 +42,17 @@ func unPackConfigFile(dir string) *MainConfig {
 	if err != nil {
 		log.Panicln("Error", err)
 	}
+	workdir, err := os.Open(conf.WorkingDir)
+	if err != nil {
+		home := os.Getenv("HOME")
+		if home == "" {
+			conf.WorkingDir = "."
+		} else {
+			conf.WorkingDir = home
+		}
+
+	}
+	workdir.Close()
 	return conf
 }
 
@@ -53,6 +66,6 @@ func main() {
 	mux.Handle("/js/", fileOnlyServer)
 	mux.Handle("/css/", fileOnlyServer)
 
-	err := http.ListenAndServe(":9898", mux)
+	err := http.ListenAndServe(conf.Port, mux)
 	fmt.Println(err)
 }
