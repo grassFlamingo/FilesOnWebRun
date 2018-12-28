@@ -12,37 +12,6 @@
 </head>
 <!-- {{/*https://www.runoob.com/w3cnote/flex-grammar.html*/}} -->
 <style>
-    .file-filter{
-    text-align: left;
-    right: 1px;
-    position: absolute;
-    margin-top: 12px;
-    font-size: 15px;
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    width: 80%;
-    height: max-content;
-}
-
-.file-filter>input{
-    border-radius: 5px;
-    right: 5px;
-    position: inherit;
-    height: inherit;
-    width: max-content;
-    padding: 6px;
-}
-
-.file-filter>img{
-    position: inherit;
-    width: 18px;
-    height: 18px;
-    right: 5px;
-    margin: 6px 6px 6px 6px;
-    z-index: 99;
-}
-
 </style>
 
 <body onscroll="boardScroll(this);">
@@ -54,32 +23,15 @@
             <a class="pwd_cell" href="/files{{.PWD}}" onmouseover="loadDirInfo(this, '/files{{.PWD}}');">{{.Name}}</a>
             {{end}}
         </div>
-        <form onsubmit="return fileFilterSubmit(this)" method="POST">
-            <div class="file-filter">
-                <input type="text" name="file-filter" id="file-filter-input" placeholder="regex">
-                <img src="/img/search.svg" alt="search" id="file-filter-search-button">
-                <script>
-                    function fileFilterSubmit(self) {
-                        alert(self);
-                        return false;
-                    }
-                    function setupFileFilter() {
-                        var inp = $("#file-filter-input");
-                        inp.on("mouseover", function () {
-                            inp.css('width', '100%');
-                        });
-                        inp.on("mouseleave", function () {
-                            inp.css('width', 'max-content');
-                        });
-                    }
-                </script>
-            </div>
-        </form>
-        <div id="debug-output-table">
-            <div id="dir-tips-block" style="position:absolute;left: 0; top: 0;display: none;" onmouseleave="$(this).css('display', 'none');">
-                <ul class="dir-tips" id="dir-tips">
-                </ul>
-            </div>
+
+        <div class="file-filter">
+            <input type="text" name="file-filter" id="file-filter-input" class="file-filter-input" placeholder="regex">
+            <img src="/img/search.svg" alt="search" id="file-filter-img" class="file-filter-img">
+        </div>
+
+        <div id="dir-tips-block" style="position:absolute; left: 0; top: 0; display: none;">
+            <ul class="dir-tips" id="dir-tips">
+            </ul>
         </div>
     </header>
     <section class="main-section">
@@ -87,10 +39,26 @@
         <script>
             var WORKING_PATH = "/files" + $("#global-working-path").text();
             $(document).ready(function () {
-                setupFileFilter();
-                $.getJSON(WORKING_PATH, {
-                    "requestfor": "data"
-                }, function (data, textStatus, jqXHR) {
+                $("#file-filter-input").keypress(function (event) {
+                    if (event.which == 0x0d) {
+                        // enter button submit data
+                        listdir();
+                    }
+                });
+                $("#dir-tips-block").mouseleave(function () {
+                    $("#dir-tips-block").css("display", "none");
+                })
+                listdir();
+            });
+
+            function listdir() {
+                WORK_DATA_ITERATOR.clear();
+                $("#display-board").empty();
+                var req = {
+                    "requestfor": "data",
+                    "filterregex": $("#file-filter-input").text(),
+                };
+                $.getJSON(WORKING_PATH, req, function (data, textStatus, jqXHR) {
                     WORK_DATA_ITERATOR.setList(data);
                     initialDisplayItem(10);
                     setTimeout(function () {
@@ -99,7 +67,8 @@
                         }
                     }, 300);
                 });
-            });
+
+            }
 
             function initialDisplayItem(count) {
                 if ($(document).height() < window.innerHeight + 50) {
@@ -163,7 +132,7 @@
                     "requestfor": "data",
                     "dironly": "yes",
                 }, function (data, textStatus, jqXHR) {
-                    if(data.State != JSON_RESPONSE_STSATE.Ok){
+                    if (data.State != JSON_RESPONSE_STSATE.Ok) {
                         return false;
                     }
                     data = data.Data;

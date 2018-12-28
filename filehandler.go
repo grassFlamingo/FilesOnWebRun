@@ -9,12 +9,13 @@ import (
 	"strings"
 )
 
-func newFileServer(fsys http.FileSystem) http.Handler {
-	return &fileServer{root: fsys}
+type fileServer struct {
+	root   http.FileSystem
+	filter StringFilter
 }
 
-type fileServer struct {
-	root http.FileSystem
+func newFileServer(fsys http.FileSystem) http.Handler {
+	return &fileServer{root: fsys, filter: &HiddenFileFilter{}}
 }
 
 func (self *fileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -61,7 +62,6 @@ func (self *fileServer) ServeJson(w http.ResponseWriter, r *http.Request) {
 	} else {
 		JsonResponse(w, self.echoDirAndFile(upath, file))
 	}
-
 }
 
 func (self *fileServer) echoDirOnly(upath string, file http.File) []*dirEchoItem {
@@ -72,7 +72,7 @@ func (self *fileServer) echoDirOnly(upath string, file http.File) []*dirEchoItem
 	}
 	echo := make([]*dirEchoItem, 0, len(files))
 	for _, f := range files {
-		if f.Name()[0] == '.' {
+		if !self.filter.DoFilter(f.Name()) {
 			continue
 		}
 		if f.IsDir() {
@@ -94,8 +94,9 @@ func (self *fileServer) echoDirAndFile(upath string, file http.File) []*fileEcho
 		return nil
 	}
 	echo := make([]*fileEchoItem, 0, len(files))
+
 	for _, f := range files {
-		if f.Name()[0] == '.' {
+		if !self.filter.DoFilter(f.Name()) {
 			continue
 		}
 		fei := newfileEchoItem(upath, f)

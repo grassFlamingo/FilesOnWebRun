@@ -1,6 +1,7 @@
 /*
  * Created by Aliy At December 28, 2018
  *
+ * Sending HTTP/JSON Response
  */
 
 package main

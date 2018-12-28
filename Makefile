@@ -10,7 +10,8 @@ THE_GO_FILES = \
 	filePacker.go \
 	main.go \
 	utils.go \
-	response.go
+	response.go \
+	filters.go
 
 all: FilesOnWebRun
 	@echo "Make FilesOnWebRun Succeed"

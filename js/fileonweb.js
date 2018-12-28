@@ -12,6 +12,11 @@ var WORK_DATA_ITERATOR = {
     current: 0,
     length: 0,
     listdata: null,
+    clear: function(){
+        this.current = 0;
+        this.length = 0;
+        this.listdata = null;
+    },
     setList: function (workdir) {
         if (workdir == null) {
             return false;

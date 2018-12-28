@@ -13,8 +13,6 @@
     background-color: #ff8600;
 }
 
-
-
 header.topbar {
     box-shadow: 3px;
     z-index: 900;
@@ -204,4 +202,52 @@ ul.dir-tips>li:hover {
     color: #1a1a1a;
     transition: background-color .2s ease-in-out;
     background-color: #fdffa3;
+}
+
+
+
+.file-filter {
+    text-align: left;
+    right: 1px;
+    position: absolute;
+    margin-top: 12px;
+    font-size: 15px;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    width: 500px;
+    height: max-content;
+}
+
+.file-filter-input {
+    border-radius: 5px;
+    right: 5px;
+    position: inherit;
+    height: inherit;
+    width: 60px;
+    padding: 6px;
+    transition: width .5s cubic-bezier(0.21, 0.65, 0.41, 0.82);
+    -moz-transition: width .5s cubic-bezier(0.21, 0.65, 0.41, 0.82);
+    /* Firefox 4 */
+    -webkit-transition: width .5s cubic-bezier(0.21, 0.65, 0.41, 0.82);
+    /* Safari 和 Chrome */
+    -o-transition: width .5s cubic-bezier(0.21, 0.65, 0.41, 0.82);
+    /* Opera */
+}
+
+.file-filter-input:hover {
+    width: 100%;
+}
+
+.file-filter-input:focus {
+    width: 100%;
+}
+
+.file-filter-img {
+    position: inherit;
+    width: 18px;
+    height: 18px;
+    right: 5px;
+    margin: 6px 6px 6px 6px;
+    z-index: 99;
 }
