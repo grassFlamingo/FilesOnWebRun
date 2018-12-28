@@ -3,14 +3,23 @@
  * Created by aliy at November 23, 2018
  */
 
+const JSON_RESPONSE_STSATE = {
+    Ok: 0x01,
+    Error: 0xf0
+};
+
 var WORK_DATA_ITERATOR = {
     current: 0,
     length: 0,
     listdata: null,
     setList: function (workdir) {
         if (workdir == null) {
-            return;
+            return false;
         }
+        if(workdir.State != JSON_RESPONSE_STSATE.Ok){
+            return false;
+        }
+        workdir = workdir.Data;
         this.length = workdir.length;
         this.listdata = workdir;
         this.current = 0;
@@ -46,6 +55,7 @@ var WORK_DATA_ITERATOR = {
                 head += 1;
             }
         }
+        return true;
     },
     next: function () {
         if (this.current < this.length) {

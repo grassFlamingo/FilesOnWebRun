@@ -6,7 +6,6 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"image"
 	_ "image/gif"
@@ -85,25 +84,12 @@ func BufImageSize(key string, r io.Reader) (int, int) {
 	return w, h
 }
 
-func JsonResponse(w io.Writer, data interface{}) {
-	res, err := json.Marshal(data)
-	if err != nil {
-		log.Fatalln("JsonResponse", err)
-	}
-	w.Write(res)
-	// log.Println("JsonResponse", string(res))
-}
-
 func intMax(a, b int) int {
 	if a > b {
 		return a
 	} else {
 		return b
 	}
-}
-
-func httpErrorResponse(w http.ResponseWriter, status int) {
-	http.Error(w, http.StatusText(status), status)
 }
 
 type FileOnlyDir string

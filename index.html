@@ -12,7 +12,36 @@
 </head>
 <!-- {{/*https://www.runoob.com/w3cnote/flex-grammar.html*/}} -->
 <style>
+    .file-filter{
+    text-align: left;
+    right: 1px;
+    position: absolute;
+    margin-top: 12px;
+    font-size: 15px;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    width: 80%;
+    height: max-content;
+}
 
+.file-filter>input{
+    border-radius: 5px;
+    right: 5px;
+    position: inherit;
+    height: inherit;
+    width: max-content;
+    padding: 6px;
+}
+
+.file-filter>img{
+    position: inherit;
+    width: 18px;
+    height: 18px;
+    right: 5px;
+    margin: 6px 6px 6px 6px;
+    z-index: 99;
+}
 
 </style>
 
@@ -25,12 +54,32 @@
             <a class="pwd_cell" href="/files{{.PWD}}" onmouseover="loadDirInfo(this, '/files{{.PWD}}');">{{.Name}}</a>
             {{end}}
         </div>
+        <form onsubmit="return fileFilterSubmit(this)" method="POST">
+            <div class="file-filter">
+                <input type="text" name="file-filter" id="file-filter-input" placeholder="regex">
+                <img src="/img/search.svg" alt="search" id="file-filter-search-button">
+                <script>
+                    function fileFilterSubmit(self) {
+                        alert(self);
+                        return false;
+                    }
+                    function setupFileFilter() {
+                        var inp = $("#file-filter-input");
+                        inp.on("mouseover", function () {
+                            inp.css('width', '100%');
+                        });
+                        inp.on("mouseleave", function () {
+                            inp.css('width', 'max-content');
+                        });
+                    }
+                </script>
+            </div>
+        </form>
         <div id="debug-output-table">
             <div id="dir-tips-block" style="position:absolute;left: 0; top: 0;display: none;" onmouseleave="$(this).css('display', 'none');">
                 <ul class="dir-tips" id="dir-tips">
                 </ul>
             </div>
-
         </div>
     </header>
     <section class="main-section">
@@ -38,13 +87,14 @@
         <script>
             var WORKING_PATH = "/files" + $("#global-working-path").text();
             $(document).ready(function () {
+                setupFileFilter();
                 $.getJSON(WORKING_PATH, {
                     "requestfor": "data"
                 }, function (data, textStatus, jqXHR) {
                     WORK_DATA_ITERATOR.setList(data);
-                    initialDisplayItem(5);
+                    initialDisplayItem(10);
                     setTimeout(function () {
-                        if(initialDisplayItem(5)){
+                        if (initialDisplayItem(10)) {
                             setTimeout(arguments.callee, 300);
                         }
                     }, 300);
@@ -60,7 +110,7 @@
 
             function boardScroll(self) {
                 if ($(document).height() - $(document).scrollTop() - window.innerHeight < 50) {
-                    displayItems(5);
+                    displayItems(10);
                 }
             }
 
@@ -70,7 +120,7 @@
                     if (itemPack.index < 0) {
                         $('#end-of-board').text("ｍ(o・ω・o)ｍ");
                         return false;
-                    }else{
+                    } else {
                         $('#end-of-board').text(`${WORK_DATA_ITERATOR.current}/${WORK_DATA_ITERATOR.length}`);
                     }
                     addItem(itemPack.index, itemPack.data);
@@ -113,6 +163,10 @@
                     "requestfor": "data",
                     "dironly": "yes",
                 }, function (data, textStatus, jqXHR) {
+                    if(data.State != JSON_RESPONSE_STSATE.Ok){
+                        return false;
+                    }
+                    data = data.Data;
                     var tips = $("#dir-tips");
                     tips.empty();
                     if (data.length <= 0) {
@@ -128,6 +182,10 @@
                     block.css("left", me.offset().left - (block.width() - me.width()) / 2);
                     block.css("display", "block");
                 });
+            }
+
+            function fileFilterSearch(self) {
+
             }
         </script>
     </section>
