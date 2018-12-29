@@ -74,11 +74,10 @@ h6 {
     margin: 0;
     max-height: 2em;
     text-overflow: ellipsis;
-    white-space: normal;
-    word-break: keep-all;
+    white-space: pre-line;
+    word-break: break-word;
     overflow: hidden;
     margin-bottom: 5px;
-    width: 100%;
 }
 
 .item_name:hover {
@@ -89,7 +88,7 @@ h6 {
     /* Safari and Chrome */
     -o-transition: height .2s ease-in-out;
     /* Opera */
-    max-height: fit-content;
+    height: fit-content;
     border-radius: 5px;
 }
 
@@ -99,7 +98,7 @@ h6 {
     margin-left: 5px;
     margin-right: 5px;
     overflow: hidden;
-    width: 120px;
+    width: min-content;
     height: fit-content;
     margin-top: 10px;
     padding: 0px 10px 0px 10px;
@@ -111,8 +110,8 @@ h6 {
 .item_cell>img {
     margin: 0;
     text-align: center;
-    width: fit-content;
-    height: fit-content;
+    width: min-content;
+    height: min-content;
 }
 
 a {

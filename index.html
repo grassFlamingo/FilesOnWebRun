@@ -172,12 +172,12 @@ input[type="range"]::-webkit-slider-thumb {
                     iconpath = FileTypeUtil.folderIcon;
                 } else if (FileTypeUtil.getFileType(item.Name) == "image") {
                     iconpath = `${WorkingPath}/${item.Name}`
-                    style = 'style="width:fit-content"';
+                    style = 'style="width:min-content"';
                 } else {
                     iconpath = FileTypeUtil.getFileIcon(item.Name);
                 }
                 $('#display-board').append(
-                    `<div class="item_cell" ${style} id="item_index_${index}">
+                    `<div class="item_cell" ${style} id="item_index_${index}" title="${item.Name}">
                         <a href="${WorkingPath}/${item.Name}">
                         <img src="${iconpath}" alt="icon" 
                         style="height:${height}px;background-color:${randomColor()};" 
