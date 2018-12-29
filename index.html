@@ -12,15 +12,18 @@
 </head>
 <!-- {{/*https://www.runoob.com/w3cnote/flex-grammar.html*/}} -->
 <style>
+
+
+
 </style>
 
-<body onscroll="boardScroll(this);">
+<body>
     <header class="topbar">
         <div class="logo">FileOnWeb</div>
         <div class="header-path">
-            <div id="global-working-path" style="display:none;">{{ . }}</div>
+            <div id="global-root-path" style="display:none;">{{ . }}</div>
             {{range .GetPackedPWD}}
-            <a class="pwd_cell" href="/root{{.PWD}}" onmouseover="loadDirInfo(this, '/root{{.PWD}}');">{{.Name}}</a>
+            <a class="pwd_cell" href="/root{{.PWD}}" onmouseover="loadDirInfo(this, '{{.PWD}}');">{{.Name}}</a>
             {{end}}
         </div>
 
@@ -37,52 +40,62 @@
     <section class="main-section">
         <div id="display-board" class="item_row"></div>
         <script>
-            var WORKING_PATH = "/root" + $("#global-working-path").text();
+            const WorkingPath = $("#global-root-path").text() == "/" ? "/root" : "/root" + $("#global-root-path").text();
+            var MainFileKeeper = null;
+            var MainFileIterator = null;
             $(document).ready(function () {
                 $("#file-filter-input").keypress(function (event) {
                     if (event.which == 0x0d) {
                         // enter button submit data
-                        listdir();
+                        reflashDisplayBoard();
                     }
                 });
                 $("#dir-tips-block").mouseleave(function () {
                     $("#dir-tips-block").css("display", "none");
-                })
-                listdir();
-            });
-
-            function listdir() {
-                WORK_DATA_ITERATOR.clear();
-                $("#display-board").empty();
+                });
                 $.getJSON("/exec", {
-                    "cmd": "ls"
+                    "cmd": "ls",
+                    "pwd": $("#global-root-path").text()
                 }, function (data, textStatus, jqXHR) {
                     data = OSUtil.unpackServerResponse(data);
-                    
+                    MainFileKeeper = new FilesKeeper(data);
+                    MainFileKeeper.sortAtoZ();
+                    reflashDisplayBoard();
+                    $("body").on("scroll",
+                        function () {
+                            if ($(document).height() - $(document).scrollTop() - window.innerHeight <
+                                50) {
+                                displayItems(10);
+                            }
+                        });
+
                 });
+
+            });
+
+            function reflashDisplayBoard() {
+                $("#display-board").empty();
+                MainFileIterator = MainFileKeeper.getIterator($("#file-filter-input").val())
+                var flag = true;
+                setTimeout(function () {
+                    if ($(document).height() < window.innerHeight + 50) {
+                        if (displayItems(MainFileIterator, 10)) {
+                            setTimeout(arguments.callee, 500);
+                        }
+                    }
+                }, 500);
+
             }
 
-            function initialDisplayItem(count) {
-                if ($(document).height() < window.innerHeight + 50) {
-                    return displayItems(count);
-                }
-                return false
-            }
-
-            function boardScroll(self) {
-                if ($(document).height() - $(document).scrollTop() - window.innerHeight < 50) {
-                    displayItems(10);
-                }
-            }
-
-            function displayItems(count) {
+            function displayItems(iterator, count) {
                 for (var i = 0; i < count; i++) {
-                    var itemPack = WORK_DATA_ITERATOR.next();
-                    if (itemPack.index < 0) {
+                    var itemPack = iterator.next();
+                    console.log(itemPack);
+                    if (itemPack == null) {
                         $('#end-of-board').text("ｍ(o・ω・o)ｍ");
                         return false;
                     } else {
-                        $('#end-of-board').text(`${WORK_DATA_ITERATOR.current}/${WORK_DATA_ITERATOR.length}`);
+                        $('#end-of-board').text(`${iterator.index}/${iterator.length}`);
                     }
                     addItem(itemPack.index, itemPack.data);
                 }
@@ -96,19 +109,17 @@
             function addItem(index, item) {
                 var imgp = "";
                 var width = 120;
-                if (item.IsImg) {
-                    imgp =
-                        `<img src="${item.Path}" alt="${item.Name}" title="${item.Name}" style="background-color:${randomColor()};width:${item.Width}px;height:${item.Height}px;" onload="imageComplete(this);">`;
-                    width = item.Width;
+                var iconpath = "";
+                if (item.IsDir) {
+                    iconpath = FileTypeUtil.folderIcon;
                 } else {
-                    imgp =
-                        `<img src="${item.Icon}" alt="${item.Name}" title="${item.Name}" style="background-color:${randomColor()};width:120px;height:120px;" onload="imageComplete(this);">`;
+                    iconpath = FileTypeUtil.getFileIcon(item.Name);
                 }
-
+                console.log("display board");
                 $('#display-board').append(
                     `<div class="item_cell" id="item_index_${index}">
-                        <a href="${item.Path}">${imgp}
-                        <div class="item_name" style="width:${width}px;"><p>${item.Name}</p></div>
+                        <a href="${WorkingPath}/${item.Name}"><img src="${iconpath}" style="height:120px;" alt="icon"/>
+                        <div class="item_name"><p>${item.Name}</p></div>
                         </a>
                     </div>`
                 );
@@ -120,21 +131,24 @@
 
             function loadDirInfo(self, pwd) {
                 var me = $(self);
-                $.getJSON(pwd, {
-                    "requestfor": "data",
-                    "dironly": "yes",
+                $.getJSON("/exec", {
+                    "pwd": pwd,
+                    "cmd": "ls",
+                    "args": ["--dir-only"].join(","),
                 }, function (data, textStatus, jqXHR) {
-                    if (data.State != JSON_RESPONSE_STSATE.Ok) {
-                        return false;
+                    data = OSUtil.unpackServerResponse(data)
+                    if (data == null) {
+                        return;
                     }
-                    data = data.Data;
                     var tips = $("#dir-tips");
                     tips.empty();
                     if (data.length <= 0) {
                         tips.append(`<li><a href="#">ヽ(*。>Д<)o゜</a></li>`)
                     } else {
                         for (var i in data) {
-                            tips.append(`<li onclick="jumpToDir(\`${data[i].Path}\`);">${data[i].Name}</li>`)
+                            tips.append(
+                                `<li onclick="jumpToDir(\`/root/${pwd}/${data[i].Name}\`);">${data[i].Name}</li>`
+                            )
                         }
                     }
 

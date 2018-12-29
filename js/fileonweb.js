@@ -3,9 +3,11 @@
  * Created by aliy at November 23, 2018
  */
 
-class FilesIterator {
-    constructor(workdir) {
-        return this.setup(workdir);
+class FilesKeeper {
+    constructor(dirList) {
+        this.dirFolders = [];
+        this.dirFiles = [];
+        this.setup(dirList);
     }
 
     clear() {
@@ -14,86 +16,118 @@ class FilesIterator {
         this.listdata = null;
     }
 
-
-    setup(workdir) {
-        if (workdir == null || workdir.State != JSON_RESPONSE_STSATE.Ok) {
-            this.clear()
+    isAllImages(){
+        if(this.dirFolders.length > 0){
             return false;
         }
-        workdir = workdir.Data;
-        this.length = workdir.length;
-        this.listdata = workdir;
-        this.current = 0;
-        if (this.length < 1) {
-            return;
-        }
-        var head = 0;
-        for (; head < workdir.length; head++) {
-            if (!workdir[head].IsDir) {
-                break;
-            }
-        }
-        var tail = head + 1;
-        for (; tail < workdir.length; tail++) {
-            if (workdir[tail].IsDir) {
-                var t = workdir[head];
-                workdir[head] = workdir[tail];
-                workdir[tail] = t;
-                head += 1;
-            }
-        }
-        for (; head < workdir.length; head++) {
-            if (workdir[head].IsImg) {
-                break;
-            }
-        }
-        tail = head + 1;
-        for (; tail < workdir.length; tail++) {
-            if (!workdir[tail].IsImg) {
-                var t = workdir[head];
-                workdir[head] = workdir[tail];
-                workdir[tail] = t;
-                head += 1;
+        for(var i in this.dirFiles){
+            if(FileTypeUtil.getFileType(this.dirFiles[i].Name) != "image"){
+                return false;
             }
         }
         return true;
     }
 
-    next() {
-        if (this.current < this.length) {
-            var dat = this.listdata[this.current];
-            var ind = this.current++;
-            return {
-                index: ind,
-                data: dat,
-            };
-        } else {
-            return {
-                index: -1,
-                data: null,
-            }
+    setup(dirList) {
+        if (dirList == undefined || dirList == null) {
+            return;
         }
-    }
-
-    getSubIterator(pattern) {
-        var out = FilesIterator(null);
-        out.listdata = new Array();
-        var oldList = this.listdata;
-        for (var i in oldList) {
-            if (pattern.test(oldList[i])) {
-                out.listdata.push(oldList[i]);
-            }
-        }
-        out.length = out.listdata.length;
-        out.current = 0;
-    }
-
-    reset() {
+        this.length = dirList.length;
+        this.listdata = dirList;
         this.current = 0;
+        if (this.length < 1) {
+            return;
+        }
+        for (var i in dirList) {
+            var titem = dirList[i];
+            titem.ModeTime = Date.parse(titem.ModeTime)
+            if (titem.IsDir) {
+                this.dirFolders.push(titem);
+            } else {
+                this.dirFiles.push(titem);
+            }
+        }
+    }
+
+    sortAtoZ() {
+        var sortmeth = function (a, b) {
+            return a.Name > b.Name;
+        }
+        this.dirFolders.sort(sortmeth);
+        this.dirFiles.sort(sortmeth);
+    }
+
+
+    sortZtoA() {
+        var sortmeth = function (a, b) {
+            return a.Name < b.Name;
+        }
+        this.dirFolders.sort(sortmeth);
+        this.dirFiles.sort(sortmeth);
+    }
+
+    sortFirstModified() {
+        var sortmeth = function (a, b) {
+            return a.ModeTime > b.ModeTime;
+        }
+        this.dirFolders.sort(sortmeth);
+        this.dirFiles.sort(sortmeth);
+    }
+
+    sortLastModified() {
+        var sortmeth = function (a, b) {
+            return a.ModeTime < b.ModeTime;
+        }
+        this.dirFolders.sort(sortmeth);
+        this.dirFiles.sort(sortmeth);
+    }
+
+    getIterator(pattern, flags) {
+        debugger
+        if(flags == undefined){
+            flags = "gi"; // global ignore case
+        }
+        return new FilesKeeperIterator(this.dirFolders, this.dirFiles, pattern, flags);
     }
 }
 
-var WORK_DATA_ITERATOR = new FilesIterator();
+class FilesKeeperIterator {
+    constructor(folderList, fileList, pattern, flags) {
+        this.thelist = folderList.concat(fileList);
+        this.index = 0;
+        this.length = this.thelist.length;
+        if (pattern == undefined) {
+            this.filter = function (item) {
+                return true;
+            }
+        } else {
+            this.pattern = new RegExp(pattern, flags)
+            this.filter = function (item) {
+                return this.pattern.test(item.Name)
+            }
+        }
+        console.log(this);
+    }
+
+    hasNext() {
+        return this.index < this.length;
+    }
+
+    next() {
+        debugger
+        var i = this.index;
+        for(; i < this.length; i++){
+            if(this.filter(this.thelist[i])){
+                this.index = i+1;
+                return {
+                    index: this.index,
+                    data: this.thelist[i],
+                }
+            }
+        }
+        return null;
+    }
+}
 
 function randomColor() {
     var raint = Math.floor(Math.random() * 0xffffff + 0x7f7f7f)
@@ -153,24 +187,34 @@ const FileTypeUtil = {
         "bmp": "image",
         "svg": "image",
         "jpeg": "image",
-        "unknown": "unknown",
+        "folder": "folder",
+        "unknow": "unknow",
     },
     folderIcon: "/img/folder.svg",
-    getSuffix: function(filename){
-        var suffix = "unknown";
-        for (var i = filename.length - 1; i >= 0; i++) {
+    getSuffix: function (filename) {
+        var suffix = "unknow";
+        if (filename[filename.length - 1] == "/") {
+            return "folder";
+        }
+        for (var i = filename.length - 1; i >= 0 && filename[i] != '/'; i--) {
             if (filename[i] == '.') {
-                suffix = filename.substring(i);
+                suffix = filename.substring(i+1);
                 suffix = suffix.toLowerCase();
                 break;
             }
         }
         return suffix;
     },
+    getFileType: function (filename) {
+        var suffix = this.getSuffix(filename);
+        var type = this.fileTypeMap[suffix];
+        if(type == undefined){
+            type = "unknow";
+        }
+        return type
+    },
     getFileIcon: function (filename) {
-        var suffix = this.getSuffix(filename)
-        console.log(suffix);
-        return `/img/${thid.fileTypeMap[suffix]}`;
+        return `/img/${this.getFileType(filename)}.svg`;
     },
 }
 
@@ -179,11 +223,9 @@ const OSUtil = {
         if (data.State == JSON_RESPONSE_STSATE.Ok) {
             return data.Data;
         }
-        errorfun = errorfun != null ? errorfun : function (msg) {
+        errorfun = errorfun != undefined ? errorfun : function (msg) {
             console.log(`Unpack Server Response Fail with message ${msg}`)
         }
         errorfun(JSON_RESPONSE_STSATE.toString(data.State));
-    },
-
-
+    }
 }

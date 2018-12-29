@@ -46,7 +46,6 @@ func upackConfigFile(dir string) *MainConfig {
 		} else {
 			conf.RootDir = home
 		}
-
 	}
 	workdir.Close()
 	return conf
@@ -57,7 +56,7 @@ func main() {
 	conf := upackConfigFile("filesonweb.json")
 	dir := http.Dir(conf.RootDir)
 	fileOnly := http.FileServer(FileOnlyDir("."))
-
+	log.Println("Setting Root as ", conf.RootDir)
 	mux := http.NewServeMux()
 	mux.Handle("/", http.RedirectHandler(WORKING_PATH, http.StatusFound))
 	mux.Handle(WORKING_PATH+"/", newFileServer(dir))

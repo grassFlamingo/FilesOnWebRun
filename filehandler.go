@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"html/template"
 	"log"
 	"net/http"
@@ -27,96 +26,7 @@ func (self *fileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		upath = upath[len(WORKING_PATH):]
 	}
 	r.URL.Path = path.Clean(upath)
-	apireq := r.FormValue("requestfor")
-	if apireq != "data" {
-		self.ServeView(w, r)
-	} else {
-		self.ServeJson(w, r)
-	}
-}
-
-func (self *fileServer) ServeJson(w http.ResponseWriter, r *http.Request) {
-	upath := r.URL.Path
-	file, err := self.root.Open(upath)
-	if err != nil {
-		log.Println("Open File", upath, err)
-		http.Error(w, err.Error(), http.StatusNotFound)
-		return
-	}
-	defer file.Close()
-
-	info, err := file.Stat()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	if !info.IsDir() {
-		http.ServeContent(w, r, info.Name(), info.ModTime(), file)
-		return
-	}
-
-	// json response
-	if r.FormValue("dironly") == "yes" {
-		JsonResponse(w, self.echoDirOnly(upath, file))
-	} else {
-		JsonResponse(w, self.echoDirAndFile(upath, file))
-	}
-}
-
-func (self *fileServer) echoDirOnly(upath string, file http.File) []*dirEchoItem {
-	files, err := file.Readdir(-1)
-	if err != nil {
-		log.Println("Show Dir", err)
-		return nil
-	}
-	echo := make([]*dirEchoItem, 0, len(files))
-	for _, f := range files {
-		if !self.filter.DoFilter(f.Name()) {
-			continue
-		}
-		if f.IsDir() {
-			fei := &dirEchoItem{
-				Name: f.Name(),
-				Path: path.Join(WORKING_PATH, upath, f.Name()),
-				Icon: "/img/folder.svg",
-			}
-			echo = append(echo, fei)
-		}
-	}
-	return echo
-}
-
-func (self *fileServer) echoDirAndFile(upath string, file http.File) []*fileEchoItem {
-	files, err := file.Readdir(-1)
-	if err != nil {
-		log.Println("Show Dir", err)
-		return nil
-	}
-	echo := make([]*fileEchoItem, 0, len(files))
-
-	for _, f := range files {
-		if !self.filter.DoFilter(f.Name()) {
-			continue
-		}
-		fei := newfileEchoItem(upath, f)
-		echo = append(echo, fei)
-		if !fei.IsImg {
-			continue
-		}
-		if ok, w, h := IsBuffedImageSize(fei.Path); ok {
-			fei.Width, fei.Height = w, h
-			continue
-		}
-		imginfo, err := self.root.Open(path.Join(upath, f.Name()))
-		if err != nil {
-			log.Println("Get Image size in servehttp", err)
-		} else {
-			fei.Width, fei.Height = BufImageSize(fei.Path, bufio.NewReader(imginfo))
-			imginfo.Close()
-		}
-	}
-	return echo
+	self.ServeView(w, r)
 }
 
 func (self *fileServer) ServeView(w http.ResponseWriter, r *http.Request) {
@@ -136,12 +46,6 @@ func (self *fileServer) ServeView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if info.IsDir() {
-		http.SetCookie(w, &http.Cookie{
-			Name:     "pwd",
-			Value:    upath,
-			Path:     "/",
-			HttpOnly: true,
-		})
 		// TODO: move this to global if not debug
 		var home_page_doc = template.Must(template.ParseFiles(PATH_INDEX))
 		err := home_page_doc.Execute(w, newDirPwd(upath))

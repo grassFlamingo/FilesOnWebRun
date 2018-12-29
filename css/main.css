@@ -64,15 +64,48 @@ h6 {
     font-weight: bold;
 }
 
+.item_name>p {
+    margin: 0;
+}
+
+.item_name {
+    text-align: center;
+    font-size: 14px;
+    margin: 0;
+    max-height: 2em;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: keep-all;
+    overflow: hidden;
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.item_name:hover {
+    transition: height .2s ease-in-out;
+    -moz-transition: height .2s ease-in-out;
+    /* Firefox 4 */
+    -webkit-transition: height .2s ease-in-out;
+    /* Safari and Chrome */
+    -o-transition: height .2s ease-in-out;
+    /* Opera */
+    max-height: fit-content;
+    border-radius: 5px;
+}
+
 .item_cell {
+    text-align: center;
     flex-basis: auto;
     margin-left: 5px;
     margin-right: 5px;
     overflow: hidden;
-    max-width: 320px;
+    max-width: 120px;
     max-height: 320px;
     margin-top: 10px;
-    margin-bottom: 35px;
+    padding: 0px 10px 0px 10px;
+}
+.item_cell:hover{
+    background-color: #f4f5b9;
 }
 
 a {
@@ -113,35 +146,6 @@ a:hover {
     max-height: 180px;
 }
 
-.item_name>p {
-    margin: 0;
-}
-
-.item_name {
-    text-align: center;
-    font-size: 14px;
-    margin: 0;
-    max-height: 2em;
-    position: absolute;
-    text-overflow: ellipsis;
-    white-space: normal;
-    word-break: keep-all;
-    overflow: hidden;
-    margin-bottom: 5px;
-}
-
-.item_name:hover {
-    transition: height .2s ease-in-out;
-    -moz-transition: height .2s ease-in-out;
-    /* Firefox 4 */
-    -webkit-transition: height .2s ease-in-out;
-    /* Safari and Chrome */
-    -o-transition: height .2s ease-in-out;
-    /* Opera */
-    max-height: fit-content;
-    background-color: #fdffa3;
-    border-radius: 5px;
-}
 
 .end-of-board {
     font-family: sans-serif;

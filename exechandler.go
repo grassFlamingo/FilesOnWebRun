@@ -24,13 +24,7 @@ func NewExecServer(root http.FileSystem) *ExecServer {
 }
 
 func (self *ExecServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("pwd")
-	if err != nil {
-		log.Println("Error at Cookie", err)
-		httpErrorResponse(w, http.StatusBadRequest)
-		return
-	}
-	log.Println("Cookie", cookie.Value)
+	pwd := r.FormValue("pwd")
 	cmd := r.FormValue("cmd")
 	arg := r.FormValue("args")
 	var args []string
@@ -40,8 +34,7 @@ func (self *ExecServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			args[i] = strings.TrimSpace(args[i])
 		}
 	}
-	log.Println("Cmd is", cmd)
-	self.exec.pwd = cookie.Value
+	self.exec.pwd = pwd
 	data, jsr := self.exec.Exec(cmd, args)
 	JsonStateResponse(w, jsr, data)
 }
@@ -89,9 +82,18 @@ func (self *ExecCMD) LS(args []string) (interface{}, JsonResponseState) {
 		return nil, JSRState_BAD_DIR
 	}
 	out := make([]ExecLSItem, 0, len(subfiles))
+	dironly := false
+	for _, arg := range args {
+		if arg == "--dir-only" {
+			dironly = true
+		}
+	}
 
 	for _, f := range subfiles {
 		if !self.fileFilter.DoFilter(f.Name()) {
+			continue
+		}
+		if dironly && !f.IsDir() {
 			continue
 		}
 		out = append(out, ExecLSItem{
