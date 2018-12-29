@@ -13,11 +13,49 @@
 <!-- {{/*https://www.runoob.com/w3cnote/flex-grammar.html*/}} -->
 <style>
 
+    .end-of-board {
+    font-family: sans-serif;
+    text-align: center;
+    position: fixed;
+    bottom: 0px;
+    left: 10px;
+}
 
+.size-of-icon{
+    font-family: sans-serif;
+    text-align: center;
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    bottom: 5px;
+    right: 10px;
+    width: 200px;
+}
+
+input[type="range"] {
+    width: 100%;
+    background-color: #1a1a1a;
+    border-radius: 15px;
+    -webkit-appearance: none;
+    height: 4px;
+    padding: 0;
+    border: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;/*去除默认样式*/
+  cursor: default;
+  top: 0;
+  height: 19px;
+  width: 5px;
+  transform: translateY(0px);
+  /*background: none repeat scroll 0 0 #5891f5;*/
+  background: #ff8600;
+  border-radius: 5px;
+}
 
 </style>
 
-<body>
+<body onscroll="onBodyScroll();">
     <header class="topbar">
         <div class="logo">FileOnWeb</div>
         <div class="header-path">
@@ -43,6 +81,7 @@
             const WorkingPath = $("#global-root-path").text() == "/" ? "/root" : "/root" + $("#global-root-path").text();
             var MainFileKeeper = null;
             var MainFileIterator = null;
+            const ImageBaseSize = 120;
             $(document).ready(function () {
                 $("#file-filter-input").keypress(function (event) {
                     if (event.which == 0x0d) {
@@ -61,25 +100,24 @@
                     MainFileKeeper = new FilesKeeper(data);
                     MainFileKeeper.sortAtoZ();
                     reflashDisplayBoard();
-                    $("body").on("scroll",
-                        function () {
-                            if ($(document).height() - $(document).scrollTop() - window.innerHeight <
-                                50) {
-                                displayItems(10);
-                            }
-                        });
-
                 });
 
             });
+
+            function onBodyScroll() {
+                var scoll = $(document).height() - $(document).scrollTop();
+                if (scoll - window.innerHeight < 100) {
+                    displayItems(MainFileIterator, 10);
+                }
+            }
 
             function reflashDisplayBoard() {
                 $("#display-board").empty();
                 MainFileIterator = MainFileKeeper.getIterator($("#file-filter-input").val())
                 var flag = true;
                 setTimeout(function () {
-                    if ($(document).height() < window.innerHeight + 50) {
-                        if (displayItems(MainFileIterator, 10)) {
+                    if ($(document).height() < window.innerHeight + 100) {
+                        if (displayItems(MainFileIterator, 20)) {
                             setTimeout(arguments.callee, 500);
                         }
                     }
@@ -90,7 +128,6 @@
             function displayItems(iterator, count) {
                 for (var i = 0; i < count; i++) {
                     var itemPack = iterator.next();
-                    console.log(itemPack);
                     if (itemPack == null) {
                         $('#end-of-board').text("ｍ(o・ω・o)ｍ");
                         return false;
@@ -102,23 +139,49 @@
                 return true;
             }
 
-            function imageComplete(self) {
-                $(self).css("background-color", "transparent");
+            function imageComplete(self, scale) {
+                self = $(self);
+                self.css("background-color", "transparent");
+                adjustImage(self, ImageBaseSize, scale);
+            }
+
+            function adjustImage(img, basesize, scale){
+                var w = img[0].naturalWidth;
+                var h = img[0].naturalHeight;
+                var f = h / w;
+                basesize = basesize*scale;
+                if(f < 0.2){
+                    // fat picture
+                    img.css("height", f * basesize);
+                }else{
+                    img.css("height", basesize);
+                }
+            }
+
+            function getImageScale(){
+                return Number($("#size-of-icon-range").val()) / 100;
             }
 
             function addItem(index, item) {
                 var imgp = "";
-                var width = 120;
+                var scale = getImageScale();
+                var height = ImageBaseSize * scale;
                 var iconpath = "";
+                var style = "";
                 if (item.IsDir) {
                     iconpath = FileTypeUtil.folderIcon;
+                } else if (FileTypeUtil.getFileType(item.Name) == "image") {
+                    iconpath = `${WorkingPath}/${item.Name}`
+                    style = 'style="width:fit-content"';
                 } else {
                     iconpath = FileTypeUtil.getFileIcon(item.Name);
                 }
-                console.log("display board");
                 $('#display-board').append(
-                    `<div class="item_cell" id="item_index_${index}">
-                        <a href="${WorkingPath}/${item.Name}"><img src="${iconpath}" style="height:120px;" alt="icon"/>
+                    `<div class="item_cell" ${style} id="item_index_${index}">
+                        <a href="${WorkingPath}/${item.Name}">
+                        <img src="${iconpath}" alt="icon" 
+                        style="height:${height}px;background-color:${randomColor()};" 
+                        onload="imageComplete(this, ${scale});" class="file-icon"/>
                         <div class="item_name"><p>${item.Name}</p></div>
                         </a>
                     </div>`
@@ -158,13 +221,22 @@
                     block.css("display", "block");
                 });
             }
-
-            function fileFilterSearch(self) {
-
-            }
         </script>
     </section>
-    <div id="end-of-board" class="end-of-board"></div>
+    <div id="end-of-board" class="end-of-board">
+    </div>
+    <div id="size-of-icon" class="size-of-icon">
+        <input id="size-of-icon-range" class="size-of-icon-range" type="range" min="1" max="500" value="100" onchange="sizeOfIconRageChange(this);"/>
+
+        <script>
+            function sizeOfIconRageChange(self){
+                var scale = Number($(self).val()) / 100;
+                $('.file-icon').each(function(index, elem){
+                    adjustImage($(elem), ImageBaseSize, scale);
+                });
+            }
+        </script>
+    </div>
 </body>
 
 </html>

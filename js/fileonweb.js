@@ -83,7 +83,6 @@ class FilesKeeper {
     }
 
     getIterator(pattern, flags) {
-        debugger
         if(flags == undefined){
             flags = "gi"; // global ignore case
         }
@@ -106,7 +105,6 @@ class FilesKeeperIterator {
                 return this.pattern.test(item.Name)
             }
         }
-        console.log(this);
     }
 
     hasNext() {
@@ -114,7 +112,6 @@ class FilesKeeperIterator {
     }
 
     next() {
-        debugger
         var i = this.index;
         for(; i < this.length; i++){
             if(this.filter(this.thelist[i])){
