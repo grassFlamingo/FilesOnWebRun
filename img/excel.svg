@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   class="icon"
+   width="200px"
+   height="200.00px"
+   viewBox="0 0 1024 1024"
+   version="1.1"
+   id="svg6"
+   sodipodi:docname="Excel.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata12">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="741"
+     id="namedview8"
+     showgrid="false"
+     inkscape:zoom="1.18"
+     inkscape:cx="100"
+     inkscape:cy="105.50847"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg6" />
+  <path
+     d="m 739.92258,23.122581 -6.60645,-6.606452 H 188.28387 c -46.24516,0 -82.58064,36.335484 -82.58064,82.580645 V 924.90323 c 0,46.24516 36.33548,82.58067 82.58064,82.58067 H 832.4129 c 46.24516,0 82.58065,-36.33551 82.58065,-82.58067 V 201.49677 Z"
+     id="path2"
+     inkscape:connector-curvature="0"
+     style="fill:#004c00"
+     sodipodi:nodetypes="ccsssssscc" />
+  <path
+     d="M733.316129 16.516129h-3.303226v132.129032c0 16.516129 8.258065 52.851613 57.806452 52.851613h127.174193L733.316129 16.516129z"
+     fill="#A6CBFF"
+     id="path4"
+     style="fill:#003000" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:675.45123291px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:16.88627815"
+     x="283.33856"
+     y="781.53583"
+     id="text12"
+     transform="scale(1.0006644,0.99933605)"><tspan
+       sodipodi:role="line"
+       id="tspan10"
+       x="283.33856"
+       y="781.53583"
+       style="fill:#ffffff;stroke-width:16.88627815">E</tspan></text>
+</svg>

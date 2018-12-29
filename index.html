@@ -20,7 +20,7 @@
         <div class="header-path">
             <div id="global-working-path" style="display:none;">{{ . }}</div>
             {{range .GetPackedPWD}}
-            <a class="pwd_cell" href="/files{{.PWD}}" onmouseover="loadDirInfo(this, '/files{{.PWD}}');">{{.Name}}</a>
+            <a class="pwd_cell" href="/root{{.PWD}}" onmouseover="loadDirInfo(this, '/root{{.PWD}}');">{{.Name}}</a>
             {{end}}
         </div>
 
@@ -37,7 +37,7 @@
     <section class="main-section">
         <div id="display-board" class="item_row"></div>
         <script>
-            var WORKING_PATH = "/files" + $("#global-working-path").text();
+            var WORKING_PATH = "/root" + $("#global-working-path").text();
             $(document).ready(function () {
                 $("#file-filter-input").keypress(function (event) {
                     if (event.which == 0x0d) {
@@ -54,20 +54,12 @@
             function listdir() {
                 WORK_DATA_ITERATOR.clear();
                 $("#display-board").empty();
-                var req = {
-                    "requestfor": "data",
-                    "filterregex": $("#file-filter-input").text(),
-                };
-                $.getJSON(WORKING_PATH, req, function (data, textStatus, jqXHR) {
-                    WORK_DATA_ITERATOR.setList(data);
-                    initialDisplayItem(10);
-                    setTimeout(function () {
-                        if (initialDisplayItem(10)) {
-                            setTimeout(arguments.callee, 300);
-                        }
-                    }, 300);
+                $.getJSON("/exec", {
+                    "cmd": "ls"
+                }, function (data, textStatus, jqXHR) {
+                    data = OSUtil.unpackServerResponse(data);
+                    
                 });
-
             }
 
             function initialDisplayItem(count) {

@@ -13,21 +13,17 @@ import (
 	"os"
 )
 
-var (
-	fileOnlyServer = http.FileServer(FileOnlyDir("."))
-)
-
 const (
-	WORKING_PATH = "/files"
+	WORKING_PATH = "/root"
 	PATH_INDEX   = "index.html"
 )
 
 type MainConfig struct {
-	WorkingDir string
-	Port       string
+	RootDir string
+	Port    string
 }
 
-func unPackConfigFile(dir string) *MainConfig {
+func upackConfigFile(dir string) *MainConfig {
 	file, err := os.OpenFile(dir, os.O_RDONLY, os.ModePerm)
 	if err != nil {
 		log.Panicln("Error", err)
@@ -42,13 +38,13 @@ func unPackConfigFile(dir string) *MainConfig {
 	if err != nil {
 		log.Panicln("Error", err)
 	}
-	workdir, err := os.Open(conf.WorkingDir)
+	workdir, err := os.Open(conf.RootDir)
 	if err != nil {
 		home := os.Getenv("HOME")
 		if home == "" {
-			conf.WorkingDir = "."
+			conf.RootDir = "."
 		} else {
-			conf.WorkingDir = home
+			conf.RootDir = home
 		}
 
 	}
@@ -58,13 +54,17 @@ func unPackConfigFile(dir string) *MainConfig {
 
 func main() {
 	log.Println("Starting App")
-	conf := unPackConfigFile("filesonweb.json")
+	conf := upackConfigFile("filesonweb.json")
+	dir := http.Dir(conf.RootDir)
+	fileOnly := http.FileServer(FileOnlyDir("."))
+
 	mux := http.NewServeMux()
 	mux.Handle("/", http.RedirectHandler(WORKING_PATH, http.StatusFound))
-	mux.Handle(WORKING_PATH+"/", newFileServer(http.Dir(conf.WorkingDir)))
-	mux.Handle("/img/", fileOnlyServer)
-	mux.Handle("/js/", fileOnlyServer)
-	mux.Handle("/css/", fileOnlyServer)
+	mux.Handle(WORKING_PATH+"/", newFileServer(dir))
+	mux.Handle("/exec/", NewExecServer(dir))
+	mux.Handle("/img/", fileOnly)
+	mux.Handle("/js/", fileOnly)
+	mux.Handle("/css/", fileOnly)
 
 	err := http.ListenAndServe(conf.Port, mux)
 	fmt.Println(err)

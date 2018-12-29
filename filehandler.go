@@ -24,7 +24,7 @@ func (self *fileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		upath = "/" + upath
 	}
 	if strings.HasPrefix(upath, WORKING_PATH) {
-		upath = upath[6:]
+		upath = upath[len(WORKING_PATH):]
 	}
 	r.URL.Path = path.Clean(upath)
 	apireq := r.FormValue("requestfor")
@@ -136,8 +136,18 @@ func (self *fileServer) ServeView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if info.IsDir() {
-		doc := template.Must(template.ParseFiles(PATH_INDEX))
-		doc.Execute(w, newDirPwd(upath))
+		http.SetCookie(w, &http.Cookie{
+			Name:     "pwd",
+			Value:    upath,
+			Path:     "/",
+			HttpOnly: true,
+		})
+		// TODO: move this to global if not debug
+		var home_page_doc = template.Must(template.ParseFiles(PATH_INDEX))
+		err := home_page_doc.Execute(w, newDirPwd(upath))
+		if err != nil {
+			log.Println(err)
+		}
 	} else {
 		http.ServeContent(w, r, info.Name(), info.ModTime(), file)
 	}

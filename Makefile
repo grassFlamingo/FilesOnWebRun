@@ -11,7 +11,8 @@ THE_GO_FILES = \
 	main.go \
 	utils.go \
 	response.go \
-	filters.go
+	filters.go \
+	exechandler.go
 
 all: FilesOnWebRun
 	@echo "Make FilesOnWebRun Succeed"

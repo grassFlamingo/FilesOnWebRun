@@ -13,11 +13,15 @@ import (
 	"net/http"
 )
 
-type JsonResponseState uint8
+type JsonResponseState uint16
 
 const (
-	JSRState_OK  = 0x01
-	JSRState_ERR = 0xF0
+	JSRState_OK  = 0x0100
+	JSRState_ERR = 0x0200
+
+	JSRState_BAD_CMD  = 0x0201
+	JSRState_BAD_DIR  = 0x0202
+	JSRState_BAD_OPEN = 0x0203
 )
 
 type DataResponse struct {
@@ -33,8 +37,8 @@ func JsonResponse(w io.Writer, data interface{}) {
 	w.Write(res)
 }
 
-func JsonErrorResponse(w io.Writer, state JsonResponseState) {
-	res, err := json.Marshal(DataResponse{State: state, Data: nil})
+func JsonStateResponse(w io.Writer, state JsonResponseState, data interface{}) {
+	res, err := json.Marshal(DataResponse{State: state, Data: data})
 	if err != nil {
 		log.Fatalln("JsonResponse", err)
 	}
