@@ -84,10 +84,7 @@ input[type="range"]::-webkit-slider-thumb {
             const ImageBaseSize = 120;
             $(document).ready(function () {
                 $("#file-filter-input").keypress(function (event) {
-                    if (event.which == 0x0d) {
-                        // enter button submit data
-                        reflashDisplayBoard();
-                    }
+                    setTimeout(reflashDisplayBoard, 200);
                 });
                 $("#dir-tips-block").mouseleave(function () {
                     $("#dir-tips-block").css("display", "none");
@@ -101,7 +98,18 @@ input[type="range"]::-webkit-slider-thumb {
                     MainFileKeeper.sortAtoZ();
                     reflashDisplayBoard();
                 });
-
+            });
+            $(document).keyup(function(event){
+                switch(event.keyCode){
+                    case 191: // ??
+                        // 0x2f = '/'
+                        $("#file-filter-input").focus();
+                        $("#file-filter-input").val("");
+                        break;
+                    case 27: // esc
+                        $("#file-filter-input").blur();
+                        break;
+                }
             });
 
             function onBodyScroll() {
@@ -203,14 +211,21 @@ input[type="range"]::-webkit-slider-thumb {
                     if (data == null) {
                         return;
                     }
+                    var filesk = new FilesKeeper(data);
+                    filesk.sortAtoZ();
+                    var iter = filesk.getIterator();
                     var tips = $("#dir-tips");
                     tips.empty();
                     if (data.length <= 0) {
                         tips.append(`<li><a href="#">ヽ(*。>Д<)o゜</a></li>`)
                     } else {
-                        for (var i in data) {
+                        while (true) {
+                            var item = iter.next();
+                            if(item == null){
+                                break;
+                            }
                             tips.append(
-                                `<li onclick="jumpToDir(\`/root/${pwd}/${data[i].Name}\`);">${data[i].Name}</li>`
+                                `<li id="dir-tips-${item.index}" onclick="jumpToDir(\`/root/${pwd}/${item.data.Name}\`);">${item.data.Name}</li>`
                             )
                         }
                     }
@@ -226,12 +241,12 @@ input[type="range"]::-webkit-slider-thumb {
     <div id="end-of-board" class="end-of-board">
     </div>
     <div id="size-of-icon" class="size-of-icon">
-        <input id="size-of-icon-range" class="size-of-icon-range" type="range" min="1" max="500" value="100" onchange="sizeOfIconRageChange(this);"/>
+        <input id="size-of-icon-range" class="size-of-icon-range" type="range" min="1" max="500" value="100" onchange="sizeOfIconRageChange(this);" />
 
         <script>
-            function sizeOfIconRageChange(self){
+            function sizeOfIconRageChange(self) {
                 var scale = Number($(self).val()) / 100;
-                $('.file-icon').each(function(index, elem){
+                $('.file-icon').each(function (index, elem) {
                     adjustImage($(elem), ImageBaseSize, scale);
                 });
             }

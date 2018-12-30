@@ -51,35 +51,35 @@ class FilesKeeper {
 
     sortAtoZ() {
         var sortmeth = function (a, b) {
-            return a.Name > b.Name;
+            return a.Name.toLowerCase() > b.Name.toLowerCase() ? 1 : -1;
         }
-        this.dirFolders.sort(sortmeth);
-        this.dirFiles.sort(sortmeth);
+        this.dirFolders = this.dirFolders.sort(sortmeth);
+        this.dirFiles = this.dirFiles.sort(sortmeth);
     }
 
 
     sortZtoA() {
         var sortmeth = function (a, b) {
-            return a.Name < b.Name;
+            return a.Name.toLowerCase() < b.Name.toLowerCase() ? 1 : -1;
         }
-        this.dirFolders.sort(sortmeth);
-        this.dirFiles.sort(sortmeth);
+        this.dirFolders = this.dirFolders.sort(sortmeth);
+        this.dirFiles = this.dirFiles.sort(sortmeth);
     }
 
     sortFirstModified() {
         var sortmeth = function (a, b) {
-            return a.ModeTime > b.ModeTime;
+            return a.ModeTime - b.ModeTime;
         }
-        this.dirFolders.sort(sortmeth);
-        this.dirFiles.sort(sortmeth);
+        this.dirFolders = this.dirFolders.sort(sortmeth);
+        this.dirFiles = this.dirFiles.sort(sortmeth);
     }
 
     sortLastModified() {
         var sortmeth = function (a, b) {
-            return a.ModeTime < b.ModeTime;
+            return b.ModeTime - a.ModeTime;
         }
-        this.dirFolders.sort(sortmeth);
-        this.dirFiles.sort(sortmeth);
+        this.dirFolders = this.dirFolders.sort(sortmeth);
+        this.dirFiles = this.dirFiles.sort(sortmeth);
     }
 
     getIterator(pattern, flags) {
