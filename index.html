@@ -12,47 +12,6 @@
 </head>
 <!-- {{/*https://www.runoob.com/w3cnote/flex-grammar.html*/}} -->
 <style>
-
-    .end-of-board {
-    font-family: sans-serif;
-    text-align: center;
-    position: fixed;
-    bottom: 0px;
-    left: 10px;
-}
-
-.size-of-icon{
-    font-family: sans-serif;
-    text-align: center;
-    position: fixed;
-    margin: 0;
-    padding: 0;
-    bottom: 5px;
-    right: 10px;
-    width: 200px;
-}
-
-input[type="range"] {
-    width: 100%;
-    background-color: #1a1a1a;
-    border-radius: 15px;
-    -webkit-appearance: none;
-    height: 4px;
-    padding: 0;
-    border: none;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;/*去除默认样式*/
-  cursor: default;
-  top: 0;
-  height: 19px;
-  width: 5px;
-  transform: translateY(0px);
-  /*background: none repeat scroll 0 0 #5891f5;*/
-  background: #ff8600;
-  border-radius: 5px;
-}
-
 </style>
 
 <body onscroll="onBodyScroll();">
@@ -157,12 +116,12 @@ input[type="range"]::-webkit-slider-thumb {
                 var w = img[0].naturalWidth;
                 var h = img[0].naturalHeight;
                 var f = h / w;
-                basesize = basesize*scale;
-                if(f < 0.2){
+                
+                if(f < 0.3){
                     // fat picture
-                    img.css("height", f * basesize);
+                    img.css("height", (20 * basesize / w) *f * basesize * scale);
                 }else{
-                    img.css("height", basesize);
+                    img.css("height", basesize * scale);
                 }
             }
 

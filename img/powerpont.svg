@@ -61,14 +61,13 @@
      style="fill:#cd5c5c" />
   <text
      xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:700.23419189px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:17.50585365"
-     x="279.01993"
-     y="815.59204"
-     id="text16"
-     transform="scale(1.0560026,0.94696737)"><tspan
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:609.31298828px;line-height:1.25;font-family:'Segoe Script';-inkscape-font-specification:'Segoe Script';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:15.23282433"
+     x="261.6579"
+     y="742.55865"
+     id="text12"><tspan
        sodipodi:role="line"
-       id="tspan14"
-       x="279.01993"
-       y="815.59204"
-       style="fill:#ffffff;stroke-width:17.50585365">P</tspan></text>
+       id="tspan10"
+       x="261.6579"
+       y="742.55865"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Segoe Script';-inkscape-font-specification:'Segoe Script';fill:#ffffff;stroke-width:15.23282433">P</tspan></text>
 </svg>
