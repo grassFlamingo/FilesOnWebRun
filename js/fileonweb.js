@@ -41,6 +41,7 @@ class FilesKeeper {
         for (var i in dirList) {
             var titem = dirList[i];
             titem.ModeTime = Date.parse(titem.ModeTime)
+            titem.LowerCaseName = titem.Name.toLowerCase()
             if (titem.IsDir) {
                 this.dirFolders.push(titem);
             } else {
@@ -51,7 +52,7 @@ class FilesKeeper {
 
     sortAtoZ() {
         var sortmeth = function (a, b) {
-            return a.Name.toLowerCase() > b.Name.toLowerCase() ? 1 : -1;
+            return a.LowerCaseName > b.LowerCaseName ? 1 : -1;
         }
         this.dirFolders = this.dirFolders.sort(sortmeth);
         this.dirFiles = this.dirFiles.sort(sortmeth);
@@ -60,7 +61,7 @@ class FilesKeeper {
 
     sortZtoA() {
         var sortmeth = function (a, b) {
-            return a.Name.toLowerCase() < b.Name.toLowerCase() ? 1 : -1;
+            return a.LowerCaseName < b.LowerCaseName ? 1 : -1;
         }
         this.dirFolders = this.dirFolders.sort(sortmeth);
         this.dirFiles = this.dirFiles.sort(sortmeth);
@@ -84,7 +85,7 @@ class FilesKeeper {
 
     getIterator(pattern, flags) {
         if(flags == undefined){
-            flags = "gi"; // global ignore case
+            flags = "i"; // global ignore case
         }
         return new FilesKeeperIterator(this.dirFolders, this.dirFiles, pattern, flags);
     }
@@ -117,7 +118,7 @@ class FilesKeeperIterator {
             if(this.filter(this.thelist[i])){
                 this.index = i+1;
                 return {
-                    index: this.index,
+                    index: i,
                     data: this.thelist[i],
                 }
             }
