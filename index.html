@@ -139,7 +139,7 @@
                     iconpath = FileTypeUtil.folderIcon;
                 } else if (FileTypeUtil.getFileType(item.Name) == "image") {
                     iconpath = `${WorkingPath}/${item.Name}`
-                    style = 'style="width:min-content"';
+                    style = 'style="width:min-content;padding:0px;"';
                 } else {
                     iconpath = FileTypeUtil.getFileIcon(item.Name);
                 }
