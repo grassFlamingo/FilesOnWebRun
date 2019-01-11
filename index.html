@@ -96,7 +96,7 @@
                 for (var i = 0; i < count; i++) {
                     var itemPack = iterator.next();
                     if (itemPack == null) {
-                        $('#end-of-board').text("ｍ(o・ω・o)ｍ");
+                        $('#end-of-board').text(`(o´･_･)っ ${iterator.length}`);
                         return false;
                     } else {
                         $('#end-of-board').text(`${iterator.index}/${iterator.length}`);
